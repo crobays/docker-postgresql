@@ -40,20 +40,20 @@ map_postgres_uid() {
 create_data_dir() {
   mkdir -p ${PG_HOME}
   chmod -R 0700 ${PG_HOME}
-  chown -R ${PG_USER}:${PG_USER} ${PG_HOME}
+  chown -R ${PG_USER}:${PG_USER} ${PG_HOME} || echo 'Can not chown'
 }
 
 create_log_dir() {
   mkdir -p ${PG_LOGDIR}
   chmod -R 1775 ${PG_LOGDIR}
-  chown -R root:${PG_USER} ${PG_LOGDIR}
+  chown -R root:${PG_USER} ${PG_LOGDIR} || echo 'Can not chown'
 }
 
 create_run_dir() {
   mkdir -p ${PG_RUNDIR} ${PG_RUNDIR}/${PG_VERSION}-main.pg_stat_tmp
   chmod -R 0755 ${PG_RUNDIR}
   chmod g+s ${PG_RUNDIR}
-  chown -R ${PG_USER}:${PG_USER} ${PG_RUNDIR}
+  chown -R ${PG_USER}:${PG_USER} ${PG_RUNDIR} || echo 'Can not chown'
 }
 
 map_postgres_uid
@@ -62,7 +62,7 @@ create_log_dir
 create_run_dir
 
 # fix ownership of ${PG_CONFDIR} (may be necessary if USERMAP_* was set)
-chown -R ${PG_USER}:${PG_USER} ${PG_CONFDIR}
+chown -R ${PG_USER}:${PG_USER} ${PG_CONFDIR} || echo 'Can not chown'
 
 if [[ ${PSQL_SSLMODE} == disable ]]; then
   sed 's/ssl = true/#ssl = true/' -i ${PG_CONFDIR}/postgresql.conf
